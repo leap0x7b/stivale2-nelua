@@ -1,0 +1,6 @@
+[submodule "nelua-decl"]
+	path = nelua-decl
+	url = https://github.com/edubart/nelua-decl
+[submodule "gcc-lua"]
+	path = gcc-lua
+	url = https://github.com/edubart/gcc-lua

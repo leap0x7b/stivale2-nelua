@@ -1,0 +1,242 @@
+##[[
+cinclude 'stivale2.h'
+]]
+global stivale2_anchor: type <cimport, nodecl, ctypedef> = @record{
+  anchor: [15]uint8,
+  bits: uint8,
+  phys_load_addr: uint64,
+  phys_bss_start: uint64,
+  phys_bss_end: uint64,
+  phys_stivale2hdr: uint64
+}
+global stivale2_tag: type <cimport, nodecl, ctypedef> = @record{
+  identifier: uint64,
+  next: uint64
+}
+global stivale2_header: type <cimport, nodecl, ctypedef> = @record{
+  entry_point: uint64,
+  stack: uint64,
+  flags: uint64,
+  tags: uint64
+}
+global stivale2_header_tag_any_video: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  preference: uint64
+}
+global stivale2_header_tag_framebuffer: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  framebuffer_width: uint16,
+  framebuffer_height: uint16,
+  framebuffer_bpp: uint16,
+  unused: uint16
+}
+global stivale2_header_tag_terminal: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint64,
+  callback: uint64
+}
+global stivale2_header_tag_smp: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint64
+}
+global stivale2_struct: type <cimport, nodecl, ctypedef> = @record{
+  bootloader_brand: [64]cchar,
+  bootloader_version: [64]cchar,
+  tags: uint64
+}
+global stivale2_pmr: type <cimport, nodecl, ctypedef> = @record{
+  base: uint64,
+  length: uint64,
+  permissions: uint64
+}
+global stivale2_struct_tag_pmrs: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  entries: uint64,
+  pmrs: [0]stivale2_pmr
+}
+global stivale2_struct_tag_cmdline: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  cmdline: uint64
+}
+global stivale2_mmap_entry: type <cimport, nodecl, ctypedef> = @record{
+  base: uint64,
+  length: uint64,
+  type: uint32,
+  unused: uint32
+}
+global stivale2_struct_tag_memmap: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  entries: uint64,
+  memmap: [0]stivale2_mmap_entry
+}
+global stivale2_struct_tag_framebuffer: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  framebuffer_addr: uint64,
+  framebuffer_width: uint16,
+  framebuffer_height: uint16,
+  framebuffer_pitch: uint16,
+  framebuffer_bpp: uint16,
+  memory_model: uint8,
+  red_mask_size: uint8,
+  red_mask_shift: uint8,
+  green_mask_size: uint8,
+  green_mask_shift: uint8,
+  blue_mask_size: uint8,
+  blue_mask_shift: uint8,
+  unused: uint8
+}
+global stivale2_struct_tag_edid: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  edid_size: uint64,
+  edid_information: [0]uint8
+}
+global stivale2_struct_tag_textmode: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  address: uint64,
+  unused: uint16,
+  rows: uint16,
+  cols: uint16,
+  bytes_per_char: uint16
+}
+global stivale2_struct_tag_terminal: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint32,
+  cols: uint16,
+  rows: uint16,
+  term_write: uint64,
+  max_length: uint64
+}
+global stivale2_module: type <cimport, nodecl, ctypedef> = @record{
+  begin: uint64,
+  End: uint64,
+  string: [128]cchar
+}
+global stivale2_struct_tag_modules: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  module_count: uint64,
+  modules: [0]stivale2_module
+}
+global stivale2_struct_tag_rsdp: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  rsdp: uint64
+}
+global stivale2_struct_tag_epoch: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  epoch: uint64
+}
+global stivale2_struct_tag_firmware: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint64
+}
+global stivale2_struct_tag_efi_system_table: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  system_table: uint64
+}
+global stivale2_struct_tag_kernel_file: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  kernel_file: uint64
+}
+global stivale2_struct_tag_kernel_file_v2: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  kernel_file: uint64,
+  kernel_size: uint64
+}
+global stivale2_struct_tag_kernel_slide: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  kernel_slide: uint64
+}
+global stivale2_struct_tag_smbios: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint64,
+  smbios_entry_32: uint64,
+  smbios_entry_64: uint64
+}
+global stivale2_smp_info: type <cimport, nodecl, ctypedef> = @record{
+  processor_id: uint32,
+  lapic_id: uint32,
+  target_stack: uint64,
+  goto_address: uint64,
+  extra_argument: uint64
+}
+global stivale2_struct_tag_smp: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  flags: uint64,
+  bsp_lapic_id: uint32,
+  unused: uint32,
+  cpu_count: uint64,
+  smp_info: [0]stivale2_smp_info
+}
+global stivale2_struct_tag_pxe_server_info: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  server_ip: uint32
+}
+global stivale2_struct_tag_mmio32_uart: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  addr: uint64
+}
+global stivale2_struct_tag_dtb: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  addr: uint64,
+  size: uint64
+}
+global stivale2_struct_vmap: type <cimport, nodecl, ctypedef> = @record{
+  tag: stivale2_tag,
+  addr: uint64
+}
+global STIVALE2_HEADER_TAG_ANY_VIDEO_ID: uint64 <comptime> = 0xc75c9fa92a44c4db
+global STIVALE2_HEADER_TAG_FRAMEBUFFER_ID: uint64 <comptime> = 0x3ecc1bc43d0f7971
+global STIVALE2_HEADER_TAG_FB_MTRR_ID: uint64 <comptime> = 0x4c7bb07731282e00
+global STIVALE2_HEADER_TAG_TERMINAL_ID: uint64 <comptime> = 0xa85d499b1823be72
+global STIVALE2_TERM_CB_DEC: uint64 <comptime> = 10
+global STIVALE2_TERM_CB_BELL: uint64 <comptime> = 20
+global STIVALE2_TERM_CB_PRIVATE_ID: uint64 <comptime> = 30
+global STIVALE2_TERM_CB_STATUS_REPORT: uint64 <comptime> = 40
+global STIVALE2_TERM_CB_POS_REPORT: uint64 <comptime> = 50
+global STIVALE2_TERM_CB_KBD_LEDS: uint64 <comptime> = 60
+global STIVALE2_TERM_CB_MODE: uint64 <comptime> = 70
+global STIVALE2_TERM_CB_LINUX: uint64 <comptime> = 80
+global STIVALE2_TERM_CTX_SIZE: uint64 <cimport, nodecl, const>
+global STIVALE2_TERM_CTX_SAVE: uint64 <cimport, nodecl, const>
+global STIVALE2_TERM_CTX_RESTORE: uint64 <cimport, nodecl, const>
+global STIVALE2_TERM_FULL_REFRESH: uint64 <cimport, nodecl, const>
+global STIVALE2_HEADER_TAG_SMP_ID: uint64 <comptime> = 0x1ab015085f3273df
+global STIVALE2_HEADER_TAG_5LV_PAGING_ID: uint64 <comptime> = 0x932f477032007e8f
+global STIVALE2_HEADER_TAG_UNMAP_NULL_ID: uint64 <comptime> = 0x92919432b16fe7e7
+global STIVALE2_BOOTLOADER_BRAND_SIZE: uint64 <comptime> = 64
+global STIVALE2_BOOTLOADER_VERSION_SIZE: uint64 <comptime> = 64
+global STIVALE2_STRUCT_TAG_PMRS_ID: uint64 <comptime> = 0x5df266a64047b6bd
+global STIVALE2_PMR_EXECUTABLE: uint64 <cimport, nodecl, const>
+global STIVALE2_PMR_WRITABLE: uint64 <cimport, nodecl, const>
+global STIVALE2_PMR_READABLE: uint64 <cimport, nodecl, const>
+global STIVALE2_STRUCT_TAG_CMDLINE_ID: uint64 <comptime> = 0xe5e76a1b4597a781
+global STIVALE2_STRUCT_TAG_MEMMAP_ID: uint64 <comptime> = 0x2187f79e8612de07
+global STIVALE2_MMAP_USABLE: uint64 <comptime> = 1
+global STIVALE2_MMAP_RESERVED: uint64 <comptime> = 2
+global STIVALE2_MMAP_ACPI_RECLAIMABLE: uint64 <comptime> = 3
+global STIVALE2_MMAP_ACPI_NVS: uint64 <comptime> = 4
+global STIVALE2_MMAP_BAD_MEMORY: uint64 <comptime> = 5
+global STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE: uint64 <comptime> = 0x1000
+global STIVALE2_MMAP_KERNEL_AND_MODULES: uint64 <comptime> = 0x1001
+global STIVALE2_MMAP_FRAMEBUFFER: uint64 <comptime> = 0x1002
+global STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID: uint64 <comptime> = 0x506461d2950408fa
+global STIVALE2_FBUF_MMODEL_RGB: uint64 <comptime> = 1
+global STIVALE2_STRUCT_TAG_EDID_ID: uint64 <comptime> = 0x968609d7af96b845
+global STIVALE2_STRUCT_TAG_TEXTMODE_ID: uint64 <comptime> = 0x38d74c23e0dca893
+global STIVALE2_STRUCT_TAG_FB_MTRR_ID: uint64 <comptime> = 0x6bc1a78ebe871172
+global STIVALE2_STRUCT_TAG_TERMINAL_ID: uint64 <comptime> = 0xc2b3f4c3233b0974
+global STIVALE2_STRUCT_TAG_MODULES_ID: uint64 <comptime> = 0x4b6fe466aade04ce
+global STIVALE2_MODULE_STRING_SIZE: uint64 <comptime> = 128
+global STIVALE2_STRUCT_TAG_RSDP_ID: uint64 <comptime> = 0x9e1786930a375e78
+global STIVALE2_STRUCT_TAG_EPOCH_ID: uint64 <comptime> = 0x566a7bed888e1407
+global STIVALE2_STRUCT_TAG_FIRMWARE_ID: uint64 <comptime> = 0x359d837855e3858c
+global STIVALE2_FIRMWARE_BIOS: uint64 <cimport, nodecl, const>
+global STIVALE2_STRUCT_TAG_EFI_SYSTEM_TABLE_ID: uint64 <comptime> = 0x4bc5ec15845b558e
+global STIVALE2_STRUCT_TAG_KERNEL_FILE_ID: uint64 <comptime> = 0xe599d90c2975584a
+global STIVALE2_STRUCT_TAG_KERNEL_FILE_V2_ID: uint64 <comptime> = 0x37c13018a02c6ea2
+global STIVALE2_STRUCT_TAG_KERNEL_SLIDE_ID: uint64 <comptime> = 0xee80847d01506c57
+global STIVALE2_STRUCT_TAG_SMBIOS_ID: uint64 <comptime> = 0x274bd246c62bf7d1
+global STIVALE2_STRUCT_TAG_SMP_ID: uint64 <comptime> = 0x34d1d96339647025
+global STIVALE2_STRUCT_TAG_PXE_SERVER_INFO: uint64 <comptime> = 0x29d1e96239247032
+global STIVALE2_STRUCT_TAG_MMIO32_UART: uint64 <comptime> = 0xb813f9b8dbc78797
+global STIVALE2_STRUCT_TAG_DTB: uint64 <comptime> = 0xabb29bd49a2833fa
+global STIVALE2_STRUCT_TAG_VMAP: uint64 <comptime> = 0xb0ed257db18cb58f

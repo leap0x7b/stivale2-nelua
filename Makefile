@@ -6,6 +6,7 @@ TFILE=$(NAME)-test.nelua
 GCCPLUGIN=-fplugin=gcc-lua/gcc/gcclua.so
 LUA_PATH=LUA_PATH_5_4="nelua-decl/?.lua;;" LUA_PATH_5_3="nelua-decl/?.lua;;" LUA_PATH="nelua-decl/?.lua;;"
 NELUA=nelua
+NELUAFLAGS=
 CC=gcc
 LD=ld
 
@@ -19,7 +20,7 @@ download:
 	wget -O stivale2.h https://github.com/stivale/stivale/raw/master/stivale2.h
 
 test:
-	$(NELUA) $(TFILE) -bo build/kernel.elf
+	$(NELUA) $(NELUAFLAGS) $(TFILE) -bo build/kernel.elf
 	make -C limine
 	rm -rf build/sysroot
 	mkdir -p build/sysroot

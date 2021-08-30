@@ -7,3 +7,4 @@ nelua_cache
 *.s
 *.bmp
 *.db
+/build

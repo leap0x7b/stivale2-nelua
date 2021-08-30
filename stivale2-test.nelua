@@ -99,40 +99,41 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
         current_tag = (void *)current_tag->next;
     }
 }
-
-// The following will be our kernel's entry point.
-void _start(struct stivale2_struct *stivale2_struct) {
-    // Let's get the terminal structure tag from the bootloader.
-    struct stivale2_struct_tag_terminal *term_str_tag;
-    term_str_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
-
-    // Check if the tag was actually found.
-    if (term_str_tag == NULL) {
-        // It wasn't found, just hang...
-        for (;;) {
-            asm ("hlt");
-        }
-    }
-
-    // Let's get the address of the terminal write function.
-    void *term_write_ptr = (void *)term_str_tag->term_write;
-
-    // Now, let's assign this pointer to a function pointer which
-    // matches the prototype described in the stivale2 specification for
-    // the stivale2_term_write function.
-    term_write = term_write_ptr;
-
-    // We should now be able to call the above function pointer to print out
-    // a simple "Hello World" to screen.
-    term_write("Hello World", 11);
-
-    // We're done, just hang...
-    for (;;) {
-        asm ("hlt");
-    }
-}
 ]])]==]
 
-local function stivale2_get_tag(stivale2_struct: *stivale2_struct): *void <cimport> end
-local function term_write(string: cstring <nodce, codename'string'>, length: csize): *void <cimport> end
+local function stivale2_get_tag(stivale2_struct: *stivale2_struct, id: uint64): *void <cimport, nodecl> end
+global term_write: function(cstring, csize): pointer <codename'term_write'>
+
+local function _start(stivale2_struct: *stivale2_struct): void <entrypoint>
+  ##[==[ cemit([[
+  // Let's get the terminal structure tag from the bootloader.
+  struct stivale2_struct_tag_terminal *term_str_tag;
+  term_str_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_TERMINAL_ID);
+
+  // Check if the tag was actually found.
+  if (term_str_tag == NULL) {
+    // It wasn't found, just hang...
+    for (;;) {
+      asm ("hlt");
+    }
+  }
+
+  // Let's get the address of the terminal write function.
+  void *term_write_ptr = (void *)term_str_tag->term_write;
+
+  // Now, let's assign this pointer to a function pointer which
+  // matches the prototype described in the stivale2 specification for
+  // the stivale2_term_write function.
+  term_write = term_write_ptr;
+  ]])]==]
+
+  local function nelua_main(argc: cint, nelua_argv: *cstring): cint <cimport,nodecl> end
+  nelua_main(0, nilptr)
+
+  -- We're done, just hang...
+  ## cemit '  for (;;) {'
+  ## cemit '    asm ("hlt");'
+  ## cemit '  }'
+end
+
 term_write("Hello", 5)

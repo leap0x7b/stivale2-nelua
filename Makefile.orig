@@ -6,9 +6,9 @@ TFILE=$(NAME)-test.nelua
 GCCPLUGIN=-fplugin=gcc-lua/gcc/gcclua.so
 LUA_PATH=LUA_PATH_5_4="nelua-decl/?.lua;;" LUA_PATH_5_3="nelua-decl/?.lua;;" LUA_PATH="nelua-decl/?.lua;;"
 NELUA=nelua
-NELUAFLAGS=--cc=clang
 CC=gcc
 LD=ld
+NELUAFLAGS=
 
 gcc-lua:
 	make -C gcc-lua

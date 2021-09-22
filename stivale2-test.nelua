@@ -1,4 +1,5 @@
 ##[[
+  cflags '-target x86_64-elf'
   cflags '-Wall -Wextra -O2 -pipe'
   cflags '-ffreestanding'
   cflags '-nostdlib'
@@ -6,12 +7,13 @@
   cflags '-fno-pic'
   cflags '-fpie'
   cflags '-mno-red-zone'
-  ldflags '-Tlinker.ld'
-  ldflags '-zmax-page-size=0x1000'
-  ldflags '-static'
-  ldflags '-pie'
-  ldflags '--no-dynamic-linker'
-  ldflags '-ztext'
+  cflags '-fuse-ld=lld'
+  ldflags '-Wl,-Tlinker.ld'
+  ldflags '-Wl,-zmax-page-size=0x1000'
+  ldflags '-Wl,-static'
+  ldflags '-Wl,-pie'
+  ldflags '-Wl,--no-dynamic-linker'
+  ldflags '-Wl,-ztext'
   pragmas.nochecks = true
   pragmas.nogc = true
 ]]
@@ -29,7 +31,7 @@ local stack: [4096]uint8
 -- stivale2 offers a runtime terminal service which can be ditched at any
 -- time, but it provides an easy way to print out to graphical terminal,
 -- especially during early boot.
-local terminal_hdr_tag: stivale2_header_tag_terminal = {
+local terminal_hdr_tag: stivale2_header_tag_terminal <ctopinit> = {
   -- All tags need to begin with an identifier and a pointer to the next tag.
   tag = {
     -- Identification constant defined in stivale2.h and the specification.
@@ -47,7 +49,7 @@ local terminal_hdr_tag: stivale2_header_tag_terminal = {
 -- This tag tells the bootloader that we want a graphical framebuffer instead
 -- of a CGA-compatible text mode. Omitting this tag will make the bootloader
 -- default to text mode, if available.
-local framebuffer_hdr_tag: stivale2_header_tag_framebuffer = {
+local framebuffer_hdr_tag: stivale2_header_tag_framebuffer <ctopinit> = {
   -- Same as above.
   tag = {
       identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
@@ -66,7 +68,7 @@ local framebuffer_hdr_tag: stivale2_header_tag_framebuffer = {
 -- This structure needs to reside in the .stivale2hdr ELF section in order
 -- for the bootloader to find it. We use this __attribute__ directive to
 -- tell the compiler to put the following structure in said section.
-local stivale_hdr: stivale2_header <cattribute'section(".stivale2hdr"),used',nodce> = {
+local stivale_hdr: stivale2_header <cattribute'section(".stivale2hdr"),used',ctopinit> = {
   -- The entry_point member is used to specify an alternative entry
   -- point that the bootloader should jump to instead of the executable's
   -- ELF entry point. We do not care about that so we leave it zeroed.
@@ -107,7 +109,6 @@ local function stivale2_get_tag(stivale2struct: stivale2_struct, id: uint64): po
     current_tag = (@*stivale2_tag)(current_tag.next)
   end
 end
-
 
 -- The following will be our kernel's entry point.
 local function _start(stivale2struct: *stivale2_struct): void <entrypoint>
